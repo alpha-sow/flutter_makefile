@@ -6,6 +6,8 @@ import 'package:path/path.dart' as path;
 
 import '../init/makefile_template.dart';
 import '../init/package_json_template.dart';
+import '../init/releaserc_template.dart';
+import '../init/update_version_template.dart';
 
 /// {@template init_command}
 ///
@@ -56,9 +58,14 @@ class InitCommand extends Command<int> {
 
     final makefilePath = path.join(outputDir, 'Makefile');
     final packageJsonPath = path.join(outputDir, 'package.json');
+    final releasercPath = path.join(outputDir, '.releaserc.json');
+    final scriptsDir = path.join(outputDir, 'scripts');
+    final updateVersionPath = path.join(scriptsDir, 'update_version.sh');
 
     final makefileFile = File(makefilePath);
     final packageJsonFile = File(packageJsonPath);
+    final releasercFile = File(releasercPath);
+    final updateVersionFile = File(updateVersionPath);
 
     // Check if files already exist
     if (!force) {
@@ -76,6 +83,20 @@ class InitCommand extends Command<int> {
         );
         return ExitCode.usage.code;
       }
+      if (releasercFile.existsSync()) {
+        _logger.err(
+          '.releaserc.json already exists at $releasercPath. '
+          'Use --force to overwrite.',
+        );
+        return ExitCode.usage.code;
+      }
+      if (updateVersionFile.existsSync()) {
+        _logger.err(
+          'update_version.sh already exists at $updateVersionPath. '
+          'Use --force to overwrite.',
+        );
+        return ExitCode.usage.code;
+      }
     }
 
     try {
@@ -85,20 +106,36 @@ class InitCommand extends Command<int> {
         dir.createSync(recursive: true);
       }
 
+      // Create scripts directory if it doesn't exist
+      final scriptsDirectory = Directory(scriptsDir);
+      if (!scriptsDirectory.existsSync()) {
+        scriptsDirectory.createSync(recursive: true);
+      }
+
       final progress = _logger.progress('Generating files');
 
       // Write the makefile template
       makefileFile.writeAsStringSync(makefileTemplate);
 
-      // Write the package.json template with app name substitution
-      final packageJsonContent = packageJsonTemplate.replaceAll(
-        '{{APP_NAME}}',
-        appName,
-      );
+      // Write the package.json template with substitutions
+      final packageJsonContent = packageJsonTemplate
+          .replaceAll('{{APP_NAME}}', appName)
+          .replaceAll('{{APP_VERSION}}', '1.0.0')
+          .replaceAll('{{APP_DESCRIPTION}}', 'Flutter mobile application');
       packageJsonFile.writeAsStringSync(packageJsonContent);
 
+      // Write the .releaserc.json template
+      releasercFile.writeAsStringSync(releasercTemplate);
+
+      // Write the update_version.sh template and make it executable
+      updateVersionFile.writeAsStringSync(updateVersionTemplate);
+      // Make the script executable (Unix permissions: rwxr-xr-x = 0755)
+      if (Platform.isLinux || Platform.isMacOS) {
+        await Process.run('chmod', ['+x', updateVersionPath]);
+      }
+
       await Future<void>.delayed(const Duration(milliseconds: 500));
-      progress.complete('Generated Makefile and package.json');
+      progress.complete('Generated project files');
 
       _logger
         ..info('')
@@ -107,10 +144,13 @@ class InitCommand extends Command<int> {
         ..info('${styleBold.wrap('Generated files:')}')
         ..info('  ${lightCyan.wrap('✓')} Makefile')
         ..info('  ${lightCyan.wrap('✓')} package.json')
+        ..info('  ${lightCyan.wrap('✓')} .releaserc.json')
+        ..info('  ${lightCyan.wrap('✓')} scripts/update_version.sh')
         ..info('')
         ..info('${styleBold.wrap('Next steps:')}')
         ..info(
-          '  1. Install npm dependencies: ${lightCyan.wrap('make npm_install')}',
+          '  1. Install npm dependencies: '
+          '${lightCyan.wrap('make npm-install')}',
         )
         ..info('  2. Customize the configuration variables in the Makefile')
         ..info(
@@ -118,7 +158,10 @@ class InitCommand extends Command<int> {
         )
         ..info('  4. Run ${lightCyan.wrap('make run')} to test your app')
         ..info(
-          '  5. Run ${lightCyan.wrap('make build_apk')} to build your app',
+          '  5. Run ${lightCyan.wrap('make build-apk')} to build your app',
+        )
+        ..info(
+          '  6. Use ${lightCyan.wrap('make release')} for automated versioning',
         )
         ..info('');
 

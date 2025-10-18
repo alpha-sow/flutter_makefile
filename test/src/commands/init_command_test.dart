@@ -53,7 +53,7 @@ void main() {
       );
     });
 
-    test('generates Makefile and package.json with default options', () async {
+    test('generates all required files with default options', () async {
       // Change to temp directory for this test
       final originalDir = Directory.current;
       Directory.current = tempDir;
@@ -65,13 +65,20 @@ void main() {
 
         final makefilePath = path.join(tempDir.path, 'Makefile');
         final packageJsonPath = path.join(tempDir.path, 'package.json');
+        final releasercPath = path.join(tempDir.path, '.releaserc.json');
+        final updateVersionPath =
+            path.join(tempDir.path, 'scripts', 'update_version.sh');
 
         final makefileFile = File(makefilePath);
         final packageJsonFile = File(packageJsonPath);
+        final releasercFile = File(releasercPath);
+        final updateVersionFile = File(updateVersionPath);
 
         // Check if files were created
         expect(makefileFile.existsSync(), isTrue);
         expect(packageJsonFile.existsSync(), isTrue);
+        expect(releasercFile.existsSync(), isTrue);
+        expect(updateVersionFile.existsSync(), isTrue);
       } finally {
         // Restore original directory
         Directory.current = originalDir;

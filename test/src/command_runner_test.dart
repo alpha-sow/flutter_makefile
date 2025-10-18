@@ -38,6 +38,13 @@ void main() {
 
       logger = _MockLogger();
 
+      when(() => logger.progress(any())).thenReturn(_MockProgress());
+      when(() => logger.info(any())).thenReturn(null);
+      when(() => logger.success(any())).thenReturn(null);
+      when(() => logger.detail(any())).thenReturn(null);
+      when(() => logger.warn(any())).thenReturn(null);
+      when(() => logger.err(any())).thenReturn(null);
+
       commandRunner = FlutterMakefileCommandRunner(
         logger: logger,
         pubUpdater: pubUpdater,
