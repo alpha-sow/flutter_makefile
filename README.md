@@ -1,5 +1,6 @@
 ## flutter_makefile
 
+![version][version_badge]
 ![coverage][coverage_badge]
 [![style: very good analysis][very_good_analysis_badge]][very_good_analysis_link]
 [![License: MIT][license_badge]][license_link]
@@ -155,6 +156,7 @@ $ open coverage/index.html
 
 ---
 
+[version_badge]: https://img.shields.io/badge/version-1.0.0-blue.svg
 [coverage_badge]: coverage_badge.svg
 [license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [license_link]: https://opensource.org/licenses/MIT
