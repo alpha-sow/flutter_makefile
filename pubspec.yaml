@@ -1,7 +1,15 @@
 name: flutter_makefile
-description: A Very Good Project created by Very Good CLI.
+description: A CLI tool for Flutter projects that provides Makefile-style commands for common development tasks like building, testing, and running Flutter applications.
 version: 0.0.1
-publish_to: none
+repository: https://github.com/alpha-sow/flutter_makefile
+homepage: https://github.com/alpha-sow/flutter_makefile
+issue_tracker: https://github.com/alpha-sow/flutter_makefile/issues
+
+topics:
+  - cli
+  - flutter
+  - makefile
+  - development-tools
 
 environment:
   sdk: ^3.9.0
