@@ -1,5 +1,6 @@
 /// The Makefile template for Flutter projects
-const makefileTemplate = '''# ====================================================================================================
+const makefileTemplate = '''
+# ====================================================================================================
 # Flutter Project - Makefile
 # ====================================================================================================
 # Makefile for Flutter project (compatible with or without FVM)
@@ -32,7 +33,7 @@ APP_STORE_CONNECT_ISSUER_ID ?=
 
 # Build configuration - can be overridden via command line
 # Example: make build_apk FLAVOR=staging TARGET=lib/main_staging.dart
-FLAVOR ?= production
+FLAVOR ?=
 TARGET ?= lib/main.dart
 
 # Asset generation configuration files
@@ -61,11 +62,12 @@ upgrade:
 
 # Run app with configurable flavor and target
 # Example: make run FLAVOR=staging TARGET=lib/main_staging.dart
+# By default runs without flavor
 run:
 \t\$(FLUTTER) run \\
 \t\t--target=\$(TARGET) \\
-\t\t--flavor \$(FLAVOR) \\
-\t\t--dart-define=FLAVOR=\$(FLAVOR)
+\t\t\$(if \$(FLAVOR),--flavor \$(FLAVOR)) \\
+\t\t\$(if \$(FLAVOR),--dart-define=FLAVOR=\$(FLAVOR))
 
 # ====================================================================================================
 # CODE GENERATION
@@ -139,8 +141,8 @@ release_dry:
 build_aab:
 \t\$(FLUTTER) build aab \\
 \t\t--target=\$(TARGET) \\
-\t\t--flavor \$(FLAVOR) \\
-\t\t--dart-define=FLAVOR=\$(FLAVOR) \\
+\t\t\$(if \$(FLAVOR),--flavor \$(FLAVOR)) \\
+\t\t\$(if \$(FLAVOR),--dart-define=FLAVOR=\$(FLAVOR)) \\
 \t\t--release
 
 # ====================================================================================================
@@ -152,8 +154,8 @@ build_aab:
 build_apk:
 \t\$(FLUTTER) build apk \\
 \t\t--target=\$(TARGET) \\
-\t\t--flavor \$(FLAVOR) \\
-\t\t--dart-define=FLAVOR=\$(FLAVOR) \\
+\t\t\$(if \$(FLAVOR),--flavor \$(FLAVOR)) \\
+\t\t\$(if \$(FLAVOR),--dart-define=FLAVOR=\$(FLAVOR)) \\
 \t\t--release
 
 # ====================================================================================================
@@ -169,8 +171,8 @@ build_ipa:
 \t\$(FLUTTER) build ipa \\
 \t\t--target=\$(TARGET) \\
 \t\t--export-options-plist=\$(EXPORT_OPTIONS_PLIST) \\
-\t\t--flavor \$(FLAVOR) \\
-\t\t--dart-define=FLAVOR=\$(FLAVOR) \\
+\t\t\$(if \$(FLAVOR),--flavor \$(FLAVOR)) \\
+\t\t\$(if \$(FLAVOR),--dart-define=FLAVOR=\$(FLAVOR)) \\
 \t\t--release
 
 # ====================================================================================================

@@ -1,5 +1,6 @@
 /// The package.json template for Flutter projects using semantic-release
-const packageJsonTemplate = '''{
+const packageJsonTemplate = r'''
+{
   "name": "{{APP_NAME}}",
   "version": "1.0.0",
   "description": "Flutter mobile application",
