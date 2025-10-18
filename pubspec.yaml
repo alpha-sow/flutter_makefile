@@ -1,6 +1,6 @@
 name: flutter_makefile
 description: A CLI tool for Flutter projects that provides Makefile-style commands for common development tasks like building, testing, and running Flutter applications.
-version: 1.0.1
+version: 1.0.2
 repository: https://github.com/alpha-sow/flutter_makefile
 homepage: https://github.com/alpha-sow/flutter_makefile
 issue_tracker: https://github.com/alpha-sow/flutter_makefile/issues

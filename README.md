@@ -156,7 +156,7 @@ $ open coverage/index.html
 
 ---
 
-[version_badge]: https://img.shields.io/badge/version-1.0.1-blue.svg
+[version_badge]: https://img.shields.io/badge/version-1.0.2-blue.svg
 [coverage_badge]: coverage_badge.svg
 [license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [license_link]: https://opensource.org/licenses/MIT
