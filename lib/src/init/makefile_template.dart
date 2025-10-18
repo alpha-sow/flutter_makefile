@@ -50,7 +50,7 @@ clean:
 get:
 \t\$(FLUTTER) pub get
 
-pod_install:
+pod-install:
 \tcd ios && arch -x86_64 pod install && cd ..
 
 upgrade:
@@ -73,13 +73,13 @@ run:
 # CODE GENERATION
 # ====================================================================================================
 
-build_runner:
+build-runner:
 \t\$(FLUTTER) pub run build_runner build --delete-conflicting-outputs
 
-build_runner_watch:
+build-runner-watch:
 \t\$(FLUTTER) pub run build_runner watch --delete-conflicting-outputs
 
-gen_assets:
+gen-assets:
 \tflutterGen -c pubspec.yaml
 
 # ====================================================================================================
@@ -89,7 +89,7 @@ gen_assets:
 test:
 \t\$(FLUTTER) test
 
-test_coverage:
+test-coverage:
 \t\$(FLUTTER) test --coverage
 \tlcov --remove coverage/lcov.info '*.g.dart' 'lib/*/data/*' -o coverage/lcov.cleaned.info
 \tgenhtml coverage/lcov.cleaned.info -o coverage/html
@@ -100,36 +100,36 @@ test_coverage:
 # ====================================================================================================
 
 # Generate launcher icons
-# Example: make icon_launcher FLAVOR=staging
-icon_launcher:
+# Example: make icon-launcher FLAVOR=staging
+icon-launcher:
 \t\$(DART) run flutter_launcher_icons -f \$(ICON_CONFIG)
 
 # Generate splash screen
-# Example: make splash_screen FLAVOR=staging
-splash_screen:
+# Example: make splash-screen FLAVOR=staging
+splash-screen:
 \t\$(DART) pub run flutter_native_splash:create --path=\$(SPLASH_CONFIG)
 
 # ====================================================================================================
 # LOCALIZATION
 # ====================================================================================================
 
-intl_utils:
+intl-utils:
 \t\$(FLUTTER) pub run intl_utils:generate
 
-purge_unused_l10n:
+purge-unused-l10n:
 \t./scripts/purge_unused_l10n_keys.sh
 
 # ====================================================================================================
 # RELEASE MANAGEMENT
 # ====================================================================================================
 
-npm_install:
+npm-install:
 \tnpm install
 
 release:
 \tGITHUB_TOKEN=\$(shell gh auth token) npm run release
 
-release_dry:
+release-dry:
 \tGITHUB_TOKEN=\$(shell gh auth token) npm run release:dry
 
 # ====================================================================================================
@@ -137,8 +137,8 @@ release_dry:
 # ====================================================================================================
 
 # Generic AAB build with configurable flavor and target
-# Example: make build_aab FLAVOR=staging TARGET=lib/main_staging.dart
-build_aab:
+# Example: make build-aab FLAVOR=staging TARGET=lib/main_staging.dart
+build-aab:
 \t\$(FLUTTER) build aab \\
 \t\t--target=\$(TARGET) \\
 \t\t\$(if \$(FLAVOR),--flavor \$(FLAVOR)) \\
@@ -150,8 +150,8 @@ build_aab:
 # ====================================================================================================
 
 # Generic APK build with configurable flavor and target
-# Example: make build_apk FLAVOR=staging TARGET=lib/main_staging.dart
-build_apk:
+# Example: make build-apk FLAVOR=staging TARGET=lib/main_staging.dart
+build-apk:
 \t\$(FLUTTER) build apk \\
 \t\t--target=\$(TARGET) \\
 \t\t\$(if \$(FLAVOR),--flavor \$(FLAVOR)) \\
@@ -164,10 +164,10 @@ build_apk:
 
 # Generic IPA build with configurable flavor and target
 # Note: EXPORT_OPTIONS_PLIST can also be overridden
-# Example: make build_ipa FLAVOR=staging TARGET=lib/main_staging.dart EXPORT_OPTIONS_PLIST=ios/ExportOptions-staging.plist
+# Example: make build-ipa FLAVOR=staging TARGET=lib/main_staging.dart EXPORT_OPTIONS_PLIST=ios/ExportOptions-staging.plist
 EXPORT_OPTIONS_PLIST ?= ios/ExportOptions.plist
 
-build_ipa:
+build-ipa:
 \t\$(FLUTTER) build ipa \\
 \t\t--target=\$(TARGET) \\
 \t\t--export-options-plist=\$(EXPORT_OPTIONS_PLIST) \\
@@ -180,21 +180,21 @@ build_ipa:
 # ====================================================================================================
 
 # Upload APK to Firebase App Distribution
-upload_apk_to_appdistrib:
+upload-apk-to-appdistrib:
 \tcd android && \\
 \texport FIREBASE_APP_ID="\$(FIREBASE_APP_ID)" && \\
 \texport ANDROID_ARTIFACT_PATH="../build/app/outputs/flutter-apk/\$(APP_NAME).apk" && \\
 \tfastlane android uploadToAppDistrib
 
 # Upload AAB to Firebase App Distribution
-upload_aab_to_appdistrib:
+upload-aab-to-appdistrib:
 \tcd android && \\
 \texport FIREBASE_APP_ID="\$(FIREBASE_APP_ID)" && \\
 \texport ANDROID_ARTIFACT_PATH="../build/app/outputs/bundle/release/\$(APP_NAME).aab" && \\
 \tfastlane android uploadToAppDistrib
 
 # Upload AAB to Play Store
-upload_aab_to_playstore:
+upload-aab-to-playstore:
 \tcd android && \\
 \texport AAB_PATH="../build/app/outputs/bundle/release/\$(APP_NAME).aab" && \\
 \tfastlane android uploadToPlayStore
@@ -204,17 +204,27 @@ upload_aab_to_playstore:
 # ====================================================================================================
 
 # Upload IPA to Firebase App Distribution
-upload_ipa_to_appdistrib:
+upload-ipa-to-appdistrib:
 \tcd ios && \\
 \texport FIREBASE_APP_ID="\$(FIREBASE_APP_ID)" && \\
 \texport IPA_PATH="../build/ios/ipa/\$(APP_NAME).ipa" && \\
 \tfastlane ios uploadToAppDistrib
 
 # Upload IPA to TestFlight
-upload_ipa_to_testflight:
+upload-ipa-to-testflight:
 \tcd ios && \\
 \texport APP_STORE_CONNECT_KEY_ID="\$(APP_STORE_CONNECT_KEY_ID)" && \\
 \texport APP_STORE_CONNECT_ISSUER_ID="\$(APP_STORE_CONNECT_ISSUER_ID)" && \\
 \texport IPA_PATH="../build/ios/ipa/\$(APP_NAME).ipa" && \\
 \tfastlane ios uploadToTestFlight
+
+# ====================================================================================================
+# PACKAGE PUBLISHING
+# ====================================================================================================
+
+deploy-dry-run: ## Validate package before publishing
+\t\$(FLUTTER) pub publish --dry-run || [ \$\$? -eq 65 ]
+
+deploy: ## Publish package to pub.dev
+\t\$(FLUTTER) pub publish
 ''';

@@ -58,6 +58,7 @@ The `init` command generates a comprehensive **Makefile** and **package.json** f
 - ✅ Support for Android (APK/AAB) and iOS (IPA) builds
 - ✅ Firebase App Distribution integration
 - ✅ TestFlight distribution support
+- ✅ Package publishing to pub.dev
 - ✅ Asset generation (icons, splash screens)
 - ✅ Testing and code generation utilities
 - ✅ Compatible with or without FVM
@@ -78,7 +79,7 @@ The `init` command generates a comprehensive **Makefile** and **package.json** f
 ```sh
 cd my_flutter_project
 flutter_makefile init --app-name my_awesome_app
-make npm_install
+make npm-install
 make run
 ```
 
@@ -102,6 +103,55 @@ $ genhtml coverage/lcov.info -o coverage/
 # Open Coverage Report
 $ open coverage/index.html
 ```
+
+## Available Makefile Commands 📋
+
+### Setup & Dependencies
+- `make clean` - Clean build artifacts
+- `make get` - Get Flutter dependencies
+- `make pod-install` - Install iOS pods
+- `make upgrade` - Upgrade Flutter dependencies
+
+### Running
+- `make run` - Run app (optionally with FLAVOR and TARGET)
+
+### Code Generation
+- `make build-runner` - Run build_runner to generate code
+- `make build-runner-watch` - Watch mode for build_runner
+- `make gen-assets` - Generate assets using FlutterGen
+
+### Testing
+- `make test` - Run all tests
+- `make test-coverage` - Generate test coverage report
+
+### Asset Generation
+- `make icon-launcher` - Generate launcher icons
+- `make splash-screen` - Generate splash screen
+
+### Localization
+- `make intl-utils` - Generate localization files
+- `make purge-unused-l10n` - Remove unused localization keys
+
+### Release Management
+- `make npm-install` - Install npm dependencies
+- `make release` - Create a new release
+- `make release-dry` - Dry run of release
+
+### Builds
+- `make build-aab` - Build Android App Bundle
+- `make build-apk` - Build Android APK
+- `make build-ipa` - Build iOS IPA
+
+### Distribution
+- `make upload-apk-to-appdistrib` - Upload APK to Firebase App Distribution
+- `make upload-aab-to-appdistrib` - Upload AAB to Firebase App Distribution
+- `make upload-aab-to-playstore` - Upload AAB to Play Store
+- `make upload-ipa-to-appdistrib` - Upload IPA to Firebase App Distribution
+- `make upload-ipa-to-testflight` - Upload IPA to TestFlight
+
+### Package Publishing
+- `make deploy-dry-run` - Validate package before publishing
+- `make deploy` - Publish package to pub.dev
 
 ---
 
