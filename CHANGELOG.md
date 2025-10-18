@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/alpha-sow/flutter_makefile/compare/v1.0.0...v1.0.1) (2025-10-18)
+
+
+### Bug Fixes
+
+* Update version in pubspec.yaml to correct format ([8b9e66a](https://github.com/alpha-sow/flutter_makefile/commit/8b9e66ae8aceacc950b27a5407e27867ea297dde))
+
 # 1.0.0 (2025-10-18)
 
 
