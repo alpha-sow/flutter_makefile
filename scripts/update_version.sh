@@ -17,19 +17,22 @@ fi
 PUBSPEC_FILE="pubspec.yaml"
 README_FILE="README.md"
 
-# Extract current build number
-CURRENT_BUILD=$(grep -E '^version: ' "$PUBSPEC_FILE" | sed -E 's/.*\+([0-9]+)/\1/')
+# Extract current version line
+CURRENT_VERSION_LINE=$(grep -E '^version: ' "$PUBSPEC_FILE" | sed -E 's/^version: //')
 
-if [ -z "$CURRENT_BUILD" ]; then
-    echo "Error: Could not extract build number from $PUBSPEC_FILE"
-    exit 1
+# Check if build number exists
+if [[ "$CURRENT_VERSION_LINE" == *"+"* ]]; then
+    # Extract and increment build number
+    CURRENT_BUILD=$(echo "$CURRENT_VERSION_LINE" | sed -E 's/.*\+([0-9]+)/\1/')
+    NEW_BUILD=$((CURRENT_BUILD + 1))
+    FULL_VERSION="${NEW_VERSION}+${NEW_BUILD}"
+    echo "Found existing build number: $CURRENT_BUILD, incrementing to: $NEW_BUILD"
+else
+    # No build number exists, use version without build number
+    FULL_VERSION="${NEW_VERSION}"
+    NEW_BUILD=""
+    echo "No build number found, using version without build number"
 fi
-
-# Increment build number
-NEW_BUILD=$((CURRENT_BUILD + 1))
-
-# Update pubspec.yaml with new version and incremented build number
-FULL_VERSION="${NEW_VERSION}+${NEW_BUILD}"
 
 echo "Updating $PUBSPEC_FILE to version $FULL_VERSION"
 
@@ -47,12 +50,20 @@ echo "Updating $README_FILE..."
 if [[ "$OSTYPE" == "darwin"* ]]; then
     # macOS requires empty string for -i flag
     sed -i '' "s/version-[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*-blue/version-$NEW_VERSION-blue/" "$README_FILE"
-    sed -i '' "s/build-[0-9][0-9]*-blue/build-$NEW_BUILD-blue/" "$README_FILE"
+    if [ -n "$NEW_BUILD" ]; then
+        sed -i '' "s/build-[0-9][0-9]*-blue/build-$NEW_BUILD-blue/" "$README_FILE"
+    fi
 else
     # Linux
     sed -i "s/version-[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*-blue/version-$NEW_VERSION-blue/" "$README_FILE"
-    sed -i "s/build-[0-9][0-9]*-blue/build-$NEW_BUILD-blue/" "$README_FILE"
+    if [ -n "$NEW_BUILD" ]; then
+        sed -i "s/build-[0-9][0-9]*-blue/build-$NEW_BUILD-blue/" "$README_FILE"
+    fi
 fi
 
-echo "✓ Version updated to $FULL_VERSION (semantic: $NEW_VERSION, build: $NEW_BUILD)"
+if [ -n "$NEW_BUILD" ]; then
+    echo "✓ Version updated to $FULL_VERSION (semantic: $NEW_VERSION, build: $NEW_BUILD)"
+else
+    echo "✓ Version updated to $FULL_VERSION (semantic: $NEW_VERSION)"
+fi
 echo "✓ Updated $PUBSPEC_FILE and $README_FILE"
